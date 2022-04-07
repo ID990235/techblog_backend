@@ -35,6 +35,7 @@
         check = false;
       }
     }
+    if (!check) layer.msg('请输入用户名和密码')
     return check;
   });
 
