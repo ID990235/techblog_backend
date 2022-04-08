@@ -15,7 +15,7 @@ const rename = promisify(fs.rename);
 const viewsDir = path.join(path.dirname(__dirname), 'views')
 
 IndexController.index = (req, res) => {
-  res.sendFile(`${viewsDir}/index.html`);
+  res.render(`${viewsDir}/index.html`); 
 }
 
 // 登录页
@@ -56,9 +56,12 @@ IndexController.signup = async (req, res) => {
   // 数据库查询用户数据
   let sql = `insert into account_data(username,password)values('${username}','${password}')`;
   const Account_data = await query(sql)
-  // 验证用户账号和密码是否匹配 
-  let str = `<script>alert('注册成功');location.href = '/login'</script>`
-  res.send(str)
+
+  if (Account_data.affectedRows > 0) {
+    res.json({ err: 20000, msg: '注册成功' })
+  } else { 
+    res.json({ err: 20001, msg: '注册失败' })
+  }
 }
 
 // 判断用户注册账号是否已存在于数据库
@@ -74,7 +77,7 @@ IndexController.getuserinfo = async (req, res) => {
   if (filterAccount_data) {
     res.json({ err: 20000, msg: '该账号可用' })
   } else {
-    res.json({ err: 20001, msg: '该账号已被使用' })
+    res.json({ err: 20002, msg: '该账号已被使用' })
   }
 }
 

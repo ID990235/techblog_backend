@@ -55,7 +55,7 @@
       url: `/getuserinfo?username=${$(this).val()}`,
       success: function (data) {
         if ($(input102[0]).val() != '') {
-          if (data.err == '20001') {
+          if (data.err == '20002') {
             $(promptEle).addClass('prompt-red').removeClass('prompt-green').text(data.msg)
           } else {
             $(promptEle).addClass('prompt-green').removeClass('prompt-red').text(data.msg)
@@ -85,7 +85,7 @@
   // 注册
   $(signupEle).on('submit', function () {
     let check = true;
-
+    let formData = new FormData(signupEle)
     for (var i = 0; i < input102.length; i++) {
       if (validate(input102[i]) == false) {
         showValidate(input102[i]);
@@ -95,16 +95,30 @@
 
     if (check) {
       if (validate(input102[2]) != validate(input102[1])) {
-        alert('密码不一致')
-        check = false
+        layer.msg('密码不一致')
+        // check = false
       } else {
-        $(signinEle).css({ display: 'block' })
-        $(signupEle).css({ display: 'none' })
-        check = true
+        $.ajax({
+          type: 'post',
+          url: '/signup',
+          data: {
+            'username': $(input102[0]).val(),
+            'password': $(input102[1]).val()
+          },
+          success: function (data) {
+            data.err == '20001' ? layer.msg(`${data.msg}`) : layer.msg(`${data.msg}`)
+            if (data.err == '20000') {
+              setTimeout(() => {
+                $(signinEle).css({ display: 'block' })
+                $(signupEle).css({ display: 'none' })
+              }, 500)
+            }
+          }
+        })
+        return false;
       }
     }
 
-    return check;
   });
 
 

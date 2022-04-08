@@ -1,0 +1,40 @@
+<div class="layui-header">
+  <div class="layui-logo layui-hide-xs layui-bg-black">小明博客</div>
+  <!-- 头部区域（可配合layui 已有的水平导航） -->
+  <ul class="layui-nav layui-layout-left">
+    <!-- 移动端显示 -->
+    <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
+      <i class="layui-icon layui-icon-spread-left"></i>
+    </li>
+
+    <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
+    <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
+    <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>
+    <li class="layui-nav-item">
+      <a href="javascript:;">nav groups</a>
+      <dl class="layui-nav-child">
+        <dd><a href="">menu 11</a></dd>
+        <dd><a href="">menu 22</a></dd>
+        <dd><a href="">menu 33</a></dd>
+      </dl>
+    </li>
+  </ul>
+  <ul class="layui-nav layui-layout-right">
+    <li class="layui-nav-item layui-hide layui-show-md-inline-block">
+      <a href="javascript:;">
+        <img src="../assets/images/微信图片_20220404045549.jpg" class="layui-nav-img">
+        小明
+      </a>
+      <dl class="layui-nav-child">
+        <dd><a href="">个人信息</a></dd>
+        <dd><a href="">修改密码</a></dd>
+        <dd><a href="/loginout" onclick="return confirm('确认退出？')">退出</a></dd>
+      </dl>
+    </li>
+    <li class="layui-nav-item" lay-header-event="menuRight" lay-unselect>
+      <a href="javascript:;">
+        <i class="layui-icon layui-icon-more-vertical"></i>
+      </a>
+    </li>
+  </ul>
+</div>
