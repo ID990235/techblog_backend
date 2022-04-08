@@ -18,8 +18,13 @@ router.get('/index', indexController.index)
 router.get('/login', indexController.login)
 
 // 分离页面
-router.get('/cate', cateController.cate)
-router.get('/article', articleController.article)
+router.get('/cate', cateController.index)
+router.get('/article', articleController.index)
+
+// 分类页获取数据
+router.get('/cateData', cateController.cateData)
+router.post('/updCateData', cateController.updCateData)
+router.get('/removeCateData', cateController.removeCateData)
 
 // 处理用户登录
 router.post('/signin', indexController.signin)

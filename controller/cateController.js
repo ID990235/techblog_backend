@@ -1,21 +1,51 @@
 const path = require('path')
-const { promisify } = require('util')
-const fs = require('fs');
 
 // controller模块导入操控mysql模块  再操控mysql  数据库返回数据给页面可视化  此过程为MVC开发模式
 const query = require('../model/configure.js');
 
 // 存放路由业务逻辑  业务逻辑在此模块中执行
 const cateController = {}
-// 端口号
-const PORT = 3200;
-// 用promisify把fs.rename中间件封装  解决回调地狱问题
-const rename = promisify(fs.rename);
-// views路径
-const viewsDir = path.join(path.dirname(__dirname), 'views')
 
-cateController.cate = (req, res) => {
-  res.render(`${viewsDir}/catelist.html`); 
+cateController.index = (req, res) => {
+  res.render(`catelist.html`);
+}
+
+// 获取分类数据
+cateController.cateData = async (req, res) => {
+  const sql = 'select * from category';
+  const data = await query(sql);
+  const responseData = {
+    data,
+    code: 0,
+    msg: "success"
+  }
+  res.json(responseData)
+}
+
+// 添加分类数据
+cateController.updCateData = async (req, res) => {
+  let { cate_id, cate_name, orderBy } = req.body
+  const sql = `update category set cate_name = '${cate_name}',orderBy = ${orderBy} where cate_id = ${cate_id}`;
+  const { affectedRows } = await query(sql);
+
+  if (affectedRows > 0) {
+    res.json({ err: '20000', msg: '编辑成功' })
+  } else {
+    res.json({ err: '20001', msg: '编辑失败' })
+  }
+}
+
+// 删除分类数据
+cateController.removeCateData = async (req, res) => {
+  let id = req.query.id;
+  const sql = `delete from category where cate_id = ${id}`;
+  const { affectedRows } = await query(sql)
+  if (affectedRows > 0) {
+    res.json({ err: '20000', msg: '删除成功' })
+  } else {
+    res.json({ err: '20002', msg: '删除失败' })
+  }
+
 }
 
 module.exports = cateController

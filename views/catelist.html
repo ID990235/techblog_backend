@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-  <title>德德后台管理系统</title>
+  <title>小明后台管理系统</title>
   <link rel="stylesheet" href="../assets/layui/css/layui.css">
 </head>
 
@@ -18,7 +18,9 @@
 
     <div class="layui-body">
       <!-- 内容主体区域 -->
-      <div style="padding: 15px;">分类页</div>
+      <div style="padding: 15px;">
+        <table class="layui-hide" id="test1" lay-filter="test1"></table>
+      </div>
     </div>
 
     <div class="layui-footer">
@@ -26,29 +28,44 @@
       底部固定区域
     </div>
   </div>
+
+  <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit" >编辑</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+  </script>
   <script src="../assets/layui/layui.js"></script>
   <script>
-    //JS 
-    layui.use(['element', 'layer', 'util'], function () {
-      var element = layui.element
-        , layer = layui.layer
-        , util = layui.util
-        , $ = layui.$;
+    layui.use(['table', 'util'], function () {
+      var table = layui.table, util = layui.util, $ = layui.jquery;
 
-      //头部事件
-      util.event('lay-header-event', {
-        //左侧菜单事件
-        menuLeft: function (othis) {
-          layer.msg('展开左侧菜单的操作111', { icon: 0 });
-        }
-        , menuRight: function () {
-          layer.open({
-            type: 1
-            , content: '<div style="padding: 15px;">处理右侧面板的操作234</div>'
-            , area: ['260px', '100%']
-            , offset: 'rt' //右上角
-            , anim: 5
-            , shadeClose: true
+      //执行渲染
+      table.render({
+        elem: '#test1',
+        height: 315,
+        url: '/cateData',
+        cols: [[
+          { type: 'checkbox', fixed: 'left' },
+          { field: 'cate_id', width: 250, title: '编辑', sort: true, align: 'center' },
+          { field: 'cate_name', width: 250, title: '分类名称', align: 'center', edit: "test1" },
+          { field: 'orderBy', width: 250, title: '排序字段', sort: true, align: 'center', edit: "test1" },
+          { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 130, align: 'center' }
+        ]]
+      })
+
+      table.on('edit(test1)', async function (obj) {
+        let data = obj.data
+        let { err, msg } = await $.post('/updCateData', data)
+        err == '20001' ? layer.msg(msg) : layer.msg(msg);
+      });
+
+      table.on('tool(test1)', function (obj) {
+        let data = obj.data
+        if (obj.event === 'del') {
+          layer.confirm('真的删除行么', async function (index) {
+            obj.del();
+            layer.close(index);
+            let { err, msg } = await $.get(`/removeCateData?id=${data.cate_id}`)
+            err == '20002' ? layer.msg(msg) : layer.msg(msg);
           });
         }
       });

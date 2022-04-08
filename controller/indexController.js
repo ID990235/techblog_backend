@@ -1,6 +1,4 @@
 const path = require('path')
-const { promisify } = require('util')
-const fs = require('fs');
 
 // controller模块导入操控mysql模块  再操控mysql  数据库返回数据给页面可视化  此过程为MVC开发模式
 const query = require('../model/configure.js');
@@ -9,18 +7,14 @@ const query = require('../model/configure.js');
 const IndexController = {}
 // 端口号
 const PORT = 3200;
-// 用promisify把fs.rename中间件封装  解决回调地狱问题
-const rename = promisify(fs.rename);
-// views路径
-const viewsDir = path.join(path.dirname(__dirname), 'views')
 
 IndexController.index = (req, res) => {
-  res.render(`${viewsDir}/index.html`); 
+  res.render(`index.html`); 
 }
 
 // 登录页
 IndexController.login = (req, res) => {
-  res.sendFile(`${viewsDir}/login.html`);
+  res.render(`login.html`);
 }
 
 // 处理用户登录
