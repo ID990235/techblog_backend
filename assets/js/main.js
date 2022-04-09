@@ -130,6 +130,7 @@
     $(signinEle).css({ display: 'none' })
     $(signupEle).css({ display: 'block' })
   })
+  
   $(txt2Ele).on('click', function () {
     $.each(input102, function (index, value) {
       hideValidate(input102[index]);

@@ -19,10 +19,10 @@
     <div class="layui-body">
       <!-- 内容主体区域 -->
       <div style="padding: 15px;">
-        <button type="button" class="layui-btn layui-btn-normal" id="addcate" title="添加分类">
+        <button type="button" class="layui-btn layui-btn-normal" id="addSettings" title="添加样式">
           <i class="layui-icon">&#xe654;</i>
         </button>
-        <table class="layui-hide" id="cate" lay-filter="cate"></table>
+        <table class="layui-hide" id="settings" lay-filter="settings"></table>
       </div>
     </div>
 
@@ -43,48 +43,48 @@
 
       //执行渲染
       table.render({
-        elem: '#cate',
+        elem: '#settings',
         height: 315,
-        url: '/cateData',
+        url: '/systemData',
         toolbar: '#toolbarDemo',
         cols: [[
-          { field: 'cate_id', width: 350, title: 'ID', sort: true, align: 'center' },
-          { field: 'cate_name', width: 350, title: '分类名称', align: 'center', edit: "cate" },
-          { field: 'orderBy', width: 350, title: '排序字段', sort: true, align: 'center', edit: "cate" },
+          { field: 'Settings_id', width: 350, title: 'ID', sort: true, align: 'center' },
+          { field: 'name', width: 350, title: '修改区域', align: 'center', edit: "settings" },
+          { field: 'val', width: 350, title: '修改样式', sort: true, align: 'center', edit: "settings" },
           { fixed: 'right', title: '操作', toolbar: '#barDemo', width: 250, align: 'center' }
         ]]
       })
 
-      $("#addcate").click(function () {
+      $("#addSettings").click(function () {
         layer.open({
           title: ['添加样式', 'font-size:20px'],
           area: ['450px', '250px'],
           content: `
                   <div class="layui-form-item">
-                    <label class="layui-form-label">分类名称</label>
+                    <label class="layui-form-label">修改区域</label>
                     <div class="layui-input-block">
-                       <input type="text" name="cate_name" placeholder="请输入分类名称" autocomplete="off" class="layui-input">
+                       <input type="text" name="areaInfo" placeholder="请输入修改区域" autocomplete="off" class="layui-input">
                     </div>
                   </div>
                   <div class="layui-form-item">
-                    <label class="layui-form-label">排序字段</label>
+                    <label class="layui-form-label">修改样式</label>
                     <div class="layui-input-block">
-                       <input type="text" name="orderBy" placeholder="请输入排序字段" autocomplete="off" class="layui-input">
+                       <input type="text" name="styleInfo" placeholder="请输入修改样式" autocomplete="off" class="layui-input">
                     </div>
                   </div>
           `,
           btn: ['确认提交', '取消'], btn1: async function (index, layero) {
-            let cate_name = $("input[name=cate_name]").eq(0).val()
-            let orderBy = $("input[name=orderBy]").eq(0).val()
+            let areaEle = $("input[name=areaInfo]").eq(0).val()
+            let styleEle = $("input[name=styleInfo]").eq(0).val()
             let { err, msg } = await $.ajax({
               type: 'post',
-              url: '/addCateData',
+              url: '/addsystemData',
               data: {
-                'cate_name': cate_name,
-                'orderBy': orderBy
+                'areaInfo': areaEle,
+                'styleInfo': styleEle
               }
             })
-            err == '20003' ? layer.msg(msg, { icon: 2 }) : (layer.msg(msg, { icon: 1 }, layer.close(index), table.reload('cate')))
+            err == '20003' ? layer.msg(msg, { icon: 2 }) : (layer.msg(msg, { icon: 1 }, layer.close(index), location.reload()))
 
           }, btn2: function (index, layero) {
             layer.close(index)
@@ -92,25 +92,20 @@
         })
       })
 
-      table.on('edit(cate)', async function (obj) {
+      table.on('edit(settings)', async function (obj) {
         let data = obj.data
-        let { err, msg } = await $.post('/updCateData', data)
-        err == '20001' ? layer.msg(msg) : layer.msg(msg);
+        let { err, msg } = await $.post('/updsystemData', data)
+        err == '20004' ? layer.msg(msg) : (layer.msg(msg), location.reload());
       });
 
-      table.on('tool(cate)', function (obj) {
+      table.on('tool(settings)', function (obj) {
         let data = obj.data
         if (obj.event === 'del') {
           layer.confirm('真的删除行么', async function (index) {
             obj.del();
             layer.close(index);
-            let { err, msg } = await $.get(`/removeCateData?id=${data.cate_id}`)
-            if (err == '20002') {
-              layer.msg(msg)
-            } else {
-              layer.msg(msg)
-              table.reload('cate')
-            }
+            let { err, msg } = await $.get(`/rmsystemData?id=${data.Settings_id}`)
+            err == '20005' ? layer.msg(msg) : (layer.msg(msg), location.reload())
           });
         }
       });

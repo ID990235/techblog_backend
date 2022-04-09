@@ -23,6 +23,19 @@ cateController.cateData = async (req, res) => {
 }
 
 // 添加分类数据
+cateController.addCateData = async (req, res) => {
+  let { cate_id, cate_name, orderBy } = req.body
+  const sql = `insert into category(cate_name,orderBy)values('${cate_name}','${orderBy}')`;
+  const { affectedRows } = await query(sql);
+
+  if (affectedRows > 0) {
+    res.json({ err: '20000', msg: '编辑成功' })
+  } else {
+    res.json({ err: '20003', msg: '编辑失败' })
+  }
+}
+
+// 修改分类数据
 cateController.updCateData = async (req, res) => {
   let { cate_id, cate_name, orderBy } = req.body
   const sql = `update category set cate_name = '${cate_name}',orderBy = ${orderBy} where cate_id = ${cate_id}`;
@@ -45,7 +58,6 @@ cateController.removeCateData = async (req, res) => {
   } else {
     res.json({ err: '20002', msg: '删除失败' })
   }
-
 }
 
 module.exports = cateController

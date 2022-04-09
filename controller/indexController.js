@@ -8,8 +8,12 @@ const IndexController = {}
 // 端口号
 const PORT = 3200;
 
+// 后台管理首页
 IndexController.index = (req, res) => {
-  res.render(`index.html`); 
+  res.render(`index.html`);
+}
+IndexController.setting = (req, res) => {
+  res.render(`System_Settings.html`);
 }
 
 // 登录页
@@ -17,25 +21,64 @@ IndexController.login = (req, res) => {
   res.render(`login.html`);
 }
 
+// 系统设置：获取数据
+IndexController.systemData = async (req, res) => {
+  const sql = 'select * from settings';
+  const data = await query(sql)
+  const responseData = {
+    data,
+    code: 0,
+    msg: "success"
+  }
+  res.json(responseData)
+}
+// 系统设置：添加数据
+IndexController.addsystemData = async (req, res) => {
+  let { areaInfo, styleInfo } = req.body
+  const sql = `insert into settings(name,val)values('${areaInfo}','${styleInfo}')`;
+  const { affectedRows } = await query(sql)
+  if (affectedRows > 0) {
+    res.json({ err: '20000', msg: '添加成功' })
+  } else {
+    res.json({ err: '20003', msg: '添加失败' })
+  }
+}
+// 系统设置：修改数据
+IndexController.updsystemData = async (req, res) => {
+  let { Settings_id, name, val } = req.body
+  const sql = `update settings set name = '${name}',val = '${val}' where Settings_id = ${Settings_id}`;
+  const { affectedRows } = await query(sql);
+
+  if (affectedRows > 0) {
+    res.json({ err: '20000', msg: '编辑成功' })
+  } else {
+    res.json({ err: '20004', msg: '编辑失败' })
+  }
+}
+// 系统设置：删除数据
+IndexController.rmsystemData = async (req, res) => {
+  let id = req.query.id;
+  console.log(id);
+  const sql = `delete from settings where Settings_id = ${id}`;
+  const { affectedRows } = await query(sql)
+  if (affectedRows > 0) {
+    res.json({ err: '20000', msg: '删除成功' })
+  } else {
+    res.json({ err: '20002', msg: '删除失败' })
+  }
+}
+
 // 处理用户登录
 IndexController.signin = async (req, res) => {
   // 接受post参数
   let { username, password } = req.body;
   // 数据库查询用户数据
-  let sql = 'SELECT * FROM account_data';
+  let sql = `SELECT * FROM account_data where username = '${username}'and password = '${password}'`;
   const Account_data = await query(sql)
-  // 验证用户账号和密码是否匹配 
-  const findAccount_data = Account_data.find((item) => {
-    const { username: u, password: p } = item;
-    if (username == u && password == p) {
-      return true;
-    }
-    return false;
-  })
 
-  if (findAccount_data) {
+  if (Account_data.length > 0) {
     // 成功,通过session记住用户信息，直接重定向到首页/index,
-    req.session.userInfo = findAccount_data;
+    req.session.userInfo = Account_data;
     res.redirect('/index')
   } else {
     // 如果失败提示用户名或密码错误
@@ -53,7 +96,7 @@ IndexController.signup = async (req, res) => {
 
   if (Account_data.affectedRows > 0) {
     res.json({ err: 20000, msg: '注册成功' })
-  } else { 
+  } else {
     res.json({ err: 20001, msg: '注册失败' })
   }
 }

@@ -1,5 +1,5 @@
-<div class="layui-header">
-  <div class="layui-logo layui-hide-xs layui-bg-black">小明博客</div>
+<div class="layui-header" id="headerColor">
+  <div class="layui-logo layui-hide-xs layui-bg-black" id="logoText">小明博客</div>
   <!-- 头部区域（可配合layui 已有的水平导航） -->
   <ul class="layui-nav layui-layout-left">
     <!-- 移动端显示 -->
@@ -22,7 +22,7 @@
   <ul class="layui-nav layui-layout-right">
     <li class="layui-nav-item layui-hide layui-show-md-inline-block">
       <a href="javascript:;">
-        <img src="../assets/images/微信图片_20220404045549.jpg" class="layui-nav-img">
+        <img src="/assets/images/微信图片_20220404045549.jpg" class="layui-nav-img">
         小明
       </a>
       <dl class="layui-nav-child">
@@ -38,3 +38,10 @@
     </li>
   </ul>
 </div>
+<script src="/assets/jquery/jquery-3.2.1.min.js"></script>
+<script>
+  let logoText = localStorage.getItem('logoText');
+  $("#logoText").text(logoText);
+  let headerColor = localStorage.getItem('headerColor');
+  $("#headerColor").css({ backgroundColor: `${headerColor}` });
+</script>

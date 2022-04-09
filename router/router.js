@@ -12,7 +12,9 @@ const indexController = require('../controller/indexController.js')
 const cateController = require('../controller/cateController.js')
 const articleController = require('../controller/articleController.js')
 
+// 管理业首页
 router.get('/index', indexController.index)
+router.get('/setting', indexController.setting)
 
 // 登录页
 router.get('/login', indexController.login)
@@ -24,7 +26,17 @@ router.get('/article', articleController.index)
 // 分类页获取数据
 router.get('/cateData', cateController.cateData)
 router.post('/updCateData', cateController.updCateData)
+router.post('/addCateData', cateController.addCateData)
 router.get('/removeCateData', cateController.removeCateData)
+
+// 系统设置：获取数据
+router.get('/systemData', indexController.systemData)
+// 系统设置：添加数据
+router.post('/addsystemData', indexController.addsystemData)
+// 系统设置：修改数据
+router.post('/updsystemData', indexController.updsystemData)
+// 系统设置：删除数据
+router.get('/rmsystemData', indexController.rmsystemData)
 
 // 处理用户登录
 router.post('/signin', indexController.signin)
