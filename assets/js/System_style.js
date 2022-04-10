@@ -17,7 +17,7 @@
         sideColor = item.val ;
       }
     }
-    $("#logoText").text(logoText = '小明博客')
+    $("#logoText").text(logoText)
     // 存储到本地存储或cookie，供其他页面使用
     localStorage.setItem('logoText', logoText)
     $("#headerColor").css({ backgroundColor: `${headerColor}` })

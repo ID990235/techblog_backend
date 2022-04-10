@@ -58,7 +58,6 @@ IndexController.updsystemData = async (req, res) => {
 // 系统设置：删除数据
 IndexController.rmsystemData = async (req, res) => {
   let id = req.query.id;
-  console.log(id);
   const sql = `delete from settings where Settings_id = ${id}`;
   const { affectedRows } = await query(sql)
   if (affectedRows > 0) {

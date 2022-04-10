@@ -23,11 +23,17 @@
   let txt2Ele = $('.txt2')[0];
   let signinEle = $('.validate-form-signin')[0];
   let signupEle = $('.validate-form-signup')[0];
+  // 正则判断
+  let userReg = /^[a-zA-Z]+\w{7,}$/;
+  let passReg = /^.{8,}$/;
+  let signReg = /\.|\*|\@/;
 
   var input101 = $('.wrap-input101 .input101');
   // 登录
   $(signinEle).on('submit', function () {
     let check = true;
+    let ipt0 = $(input101[0]).val()
+    let ipt1 = $(input101[1]).val()
 
     for (var i = 0; i < input101.length; i++) {
       if (validate(input101[i]) == false) {
@@ -35,7 +41,17 @@
         check = false;
       }
     }
-    if (!check) layer.msg('请输入用户名和密码')
+    if (!check) layer.msg('请输入用户名和密码', { icon: 2 })
+
+    if (check) {
+      if (!userReg.test(ipt0)) {
+        layer.msg('用户名最少8位，开头必须是字母，只包含字母、数字和下划线。', { icon: 2 })
+        check = false
+      } else if (!passReg.test(ipt1) || !signReg.test(ipt1)) {
+        layer.msg('密码最少8位，需包含".或*或@"。', { icon: 2 })
+        check = false
+      }
+    }
     return check;
   });
 
@@ -85,7 +101,10 @@
   // 注册
   $(signupEle).on('submit', function () {
     let check = true;
-    let formData = new FormData(signupEle)
+    let ipt0 = $(input102[0]).val()
+    let ipt1 = $(input102[1]).val()
+    let ipt2 = $(input102[2]).val()
+
     for (var i = 0; i < input102.length; i++) {
       if (validate(input102[i]) == false) {
         showValidate(input102[i]);
@@ -93,26 +112,31 @@
       }
     }
 
+    if (!check) {
+      layer.msg('请输入用户名和密码。', { icon: 2 })
+      return false
+    }
+
     if (check) {
-      if (validate(input102[2]) != validate(input102[1])) {
-        layer.msg('密码不一致')
-        // check = false
+      if (!userReg.test(ipt0)) {
+        layer.msg('用户名最少8位，开头必须是字母，只包含字母、数字和下划线。', { icon: 2 })
+        return false
+      } else if (ipt2 != ipt1) {
+        layer.msg('密码不一致', { icon: 2 })
+        return false
+      } else if (!passReg.test(ipt1) || !signReg.test(ipt1)) {
+        layer.msg('密码最少8位，需包含".或*或@"。', { icon: 2 })
+        return false
       } else {
         $.ajax({
           type: 'post',
           url: '/signup',
           data: {
-            'username': $(input102[0]).val(),
-            'password': $(input102[1]).val()
+            'username': ipt0,
+            'password': ipt1
           },
           success: function (data) {
-            data.err == '20001' ? layer.msg(`${data.msg}`) : layer.msg(`${data.msg}`)
-            if (data.err == '20000') {
-              setTimeout(() => {
-                $(signinEle).css({ display: 'block' })
-                $(signupEle).css({ display: 'none' })
-              }, 500)
-            }
+            data.err == '20001' ? layer.msg(`${data.msg}`) : layer.msg(`${data.msg}`), $(txt2Ele).click()
           }
         })
         return false;
@@ -130,7 +154,7 @@
     $(signinEle).css({ display: 'none' })
     $(signupEle).css({ display: 'block' })
   })
-  
+
   $(txt2Ele).on('click', function () {
     $.each(input102, function (index, value) {
       hideValidate(input102[index]);
