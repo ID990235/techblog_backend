@@ -60,4 +60,11 @@ cateController.removeCateData = async (req, res) => {
   }
 }
 
+// 查询分组总数
+cateController.cateCount = async (req, res) => {
+  const sql = `SELECT count(t1.id) total,t2.cate_name FROM article t1 LEFT JOIN category t2 on t1.cate_id = t2.cate_id GROUP BY t1.cate_id`;
+  let result = await query(sql)
+  res.json(result)
+}
+
 module.exports = cateController

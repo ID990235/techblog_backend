@@ -1,42 +1,66 @@
 <div class="layui-header" id="headerColor">
   <div class="layui-logo layui-hide-xs layui-bg-black" id="logoText">小明博客</div>
-  <!-- 头部区域（可配合layui 已有的水平导航） -->
-  <ul class="layui-nav layui-layout-left">
-    <!-- 移动端显示 -->
-    <li class="layui-nav-item layui-show-xs-inline-block layui-hide-sm" lay-header-event="menuLeft">
-      <i class="layui-icon layui-icon-spread-left"></i>
-    </li>
 
-    <li class="layui-nav-item layui-hide-xs"><a href="">nav 1</a></li>
-    <li class="layui-nav-item layui-hide-xs"><a href="">nav 2</a></li>
-    <li class="layui-nav-item layui-hide-xs"><a href="">nav 3</a></li>
-    <li class="layui-nav-item">
-      <a href="javascript:;">nav groups</a>
-      <dl class="layui-nav-child">
-        <dd><a href="">menu 11</a></dd>
-        <dd><a href="">menu 22</a></dd>
-        <dd><a href="">menu 33</a></dd>
-      </dl>
-    </li>
-  </ul>
   <ul class="layui-nav layui-layout-right">
     <li class="layui-nav-item layui-hide layui-show-md-inline-block">
       <a href="javascript:;">
-        <img src="/assets/images/微信图片_20220404045549.jpg" class="layui-nav-img">
-        小明
+        <img id="avatar" src="/assets/images/微信图片_20220404045549.jpg" class="layui-nav-img">
+        <span id="username">小明</span>
       </a>
       <dl class="layui-nav-child">
-        <dd><a href="">个人信息</a></dd>
-        <dd><a href="">修改密码</a></dd>
+        <dd><a href="javascript:;" id="showUserInfo">个人信息</a></dd>
+        <dd><a href="javascript:;" id="changePassword">修改密码</a></dd>
         <dd><a href="javascript:;" id="exit">退出</a></dd>
       </dl>
     </li>
-
   </ul>
 </div>
 <script src="/assets/jquery/jquery-3.2.1.min.js"></script>
 <script src="/assets/layui/layui.js"></script>
+<script src="https://cdn.bootcdn.net/ajax/libs/js-cookie/3.0.1/js.cookie.min.js"></script>
 <script>
+  const form = layui.form, layer = layui.layer;
+  let { id, username, password, intro, avatar } = JSON.parse(Cookies.get('userinfo'))
+  $("#username").text(username)
+  $("#avatar").attr('src', avatar)
+
+  let userTemplate = `<form class="layui-form" id="myform" lay-filter="editform">
+                <div style="width:400px;padding:15px 0">
+                  <div>
+                    <div class="layui-form-item">
+                      <label class="layui-form-label">用户名</label>
+                      <div class="layui-input-block">
+                        <input type="text" name="username" value='${username}' lay-verify="title" autocomplete="off"  class="layui-input">
+                      </div>
+                    </div>
+                    <div class="layui-form-item">
+                      <label class="layui-form-label">上传头像</label>
+                      <div class="layui-input-block">
+                        <div class="layui-upload">
+                          <input type="file" name="avatar" style="display:none" onchange="upload(this)">
+                          <button type="button" class="layui-btn" id="test1">上传头像</button>
+                          <div class="layui-upload-list drag-disabled">
+                            <span style="font-size: 13px;">支持JPG、PNG、GIF格式，小于2MB</span>
+                            <img class="layui-upload-img" id="demo1" src="${avatar}" style="display: block;width:80px;height:80px;border-radius:50px;"draggable="false">
+                          </div>
+                        </div> 
+                      </div>
+                    </div>
+                    <div class="layui-form-item">
+                      <label class="layui-form-label">个人介绍</label>
+                      <div class="layui-input-inline">
+                        <textarea name="intro"   class="layui-textarea" id="intro" cols="30" rows="4">${intro}</textarea>
+                      </div>
+                    </div>
+                    <div class="layui-form-item" style="float: right;">
+                      <div class="layui-input-block">
+                        <button type="submit" class="layui-btn" lay-submit="" lay-filter="formUserInfo">立即提交</button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                </form>`
+
   let logoText = localStorage.getItem('logoText');
   $("#logoText").text(logoText);
   let headerColor = localStorage.getItem('headerColor');
@@ -54,4 +78,133 @@
       }
     })
   })
+
+  $("#showUserInfo").click(function () {
+    layer.open({
+      type: 1,
+      title: ['修改个人信息', 'font-size:15px'],
+      area: ['430px', '480px'],
+      closeBtn: 2,
+      content: userTemplate
+    })
+  })
+
+  let picFile;
+  let blog = null;
+  function upload(ele) {
+    picFile = ele.files[0];
+    if (picFile) {
+      let filereader = new FileReader();
+      filereader.readAsDataURL(picFile);
+      let fileName = picFile.name;
+      let fileExt = fileName.lastIndexOf('.');
+      let fileSuffix = fileName.substring(fileExt + 1, fileName.length);
+      // 单位换算： 1GB = 1024MB , 1MB = 1024KB  1kb = 1024byte
+      let fileSize = Math.ceil(picFile.size / 1024 / 1024);
+      filereader.onload = function () {
+        if (fileSize < 2 && (fileSuffix === 'jpg' || fileSuffix === 'png' || fileSuffix === 'gif')) {
+          $("#demo1").attr('src', this.result)
+          blog = true;
+        } else {
+          layer.msg('请上传正确格式的图片，不大于2MB的图片。', { icon: 2 })
+          blog = false;
+        }
+      }
+    }
+  }
+
+  form.on('submit(formUserInfo)', function (data) {
+    let myForm = $('#myform')[0];
+    let formData = new FormData(myForm);
+    // 有上传图片则删除原图  反之保留原图
+    formData.set('isPicReplace', picFile ? 1 : 0)
+    if (blog) {
+      $.ajax({
+        type: "post",
+        url: `/upduserinfo`,
+        data: formData,
+        processData: false,
+        contentType: false
+      }).then(res => {
+        const { err, msg, pic } = res;
+        if (err == '20004') {
+          layer.msg(msg, { icon: 2 })
+        } else {
+          layer.msg(msg, { icon: 1 })
+          $("#avatar").attr('src', picFile ? pic : avatar)
+        }
+      })
+    } else { 
+      layer.msg('请更换正确格式的图片。')
+    }
+
+    return false; // 这句话阻止默认行为 会包装成一个Promise.resove(false)进行返回
+  });
+
+  $(document).on('click', '#test1', function () {
+    $("input[name=avatar]").eq(0).click()
+  })
+
+  // 禁止拖拽图片
+  document.body.addEventListener('dragstart', function (e) {
+    if (e.target.nodeName.toLowerCase() === 'img' && e.target.parentNode.classList.contains('drag-disabled')) {
+      e.preventDefault();
+    }
+  })
+
+  $("#changePassword").click(function () {
+    let passReg = /^.{8,}$/;
+    let signReg = /\.|\*|\@/;
+    layer.open({
+      type: 0,
+      title: ['修改密码', 'font-size:15px'],
+      area: ['450px', '250px'],
+      closeBtn: 2,
+      content: `
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">旧密码</label>
+                    <div class="layui-input-block">
+                       <input type="password" name="oldpassword" placeholder="请输入旧密码" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+                  <div class="layui-form-item">
+                    <label class="layui-form-label">新密码</label>
+                    <div class="layui-input-block">
+                       <input type="password" name="newpassword" placeholder="请输入新密码" autocomplete="off" class="layui-input">
+                    </div>
+                  </div>
+          `,
+      btn: ['确认提交', '取消'], btn1: async function (index, layero) {
+        const ipt1 = $("input[name=oldpassword]").eq(0).val()
+        const ipt2 = $("input[name=newpassword]").eq(0).val()
+        if (ipt1 == '') {
+          layer.msg('请输入旧密码', { icon: 2 })
+        } else if (ipt2 == '') {
+          layer.msg("请输入新密码", { icon: 2 })
+        } else if (!passReg.test(ipt2) || !signReg.test(ipt2)) {
+          layer.msg('密码最少8位，需包含".或*或@"。', { icon: 2 })
+        } else {
+          let { err, msg } = await $.ajax({
+            type: 'post',
+            url: '/newpassword',
+            data: {
+              id,
+              'oldpassword': ipt1,
+              'newpassword': ipt2
+            }
+          })
+          if (err == '20005') {
+            layer.msg(msg, { icon: 2 })
+          } else if (err == '20006') {
+            layer.msg(msg, { icon: 2 })
+          } else {
+            layer.msg(msg, { icon: 1 }), layer.close(index)
+          }
+        }
+      }, btn2: function (index, layero) {
+        layer.close(index)
+      }
+    })
+  })
+
 </script>

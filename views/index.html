@@ -18,7 +18,9 @@
 
     <div class="layui-body">
       <!-- 内容主体区域 -->
-      <div style="padding: 15px;">首页</div>
+      <div style="padding: 15px;">
+        <div id="main" style="width: 600px;height:400px;"></div>
+      </div>
     </div>
 
     <div class="layui-footer">
@@ -28,6 +30,46 @@
   </div>
 
   <script src="/assets/js/System_style.js"></script>
+  <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
 </body>
+<script>
+  function loadGraphy(cates, totals) {
+    // 基于准备好的dom，初始化echarts实例
+    var myChart = echarts.init(document.getElementById('main'));
+
+    // 指定图表的配置项和数据
+    option = {
+      title: {
+        text: '分类文章统计'
+      },
+      length: {
+        data: ['篇数']
+      },
+      xAxis: {
+        data: cates
+      },
+      yAxis: {},
+      series: [{
+        name: '篇数',
+        data: totals,
+        type: 'bar'
+      }
+      ]
+    };
+
+    // 使用刚指定的配置项和数据显示图表。
+    myChart.setOption(option);
+  }
+
+  $.get('/cateCount').then(res => {
+    let cates = [];
+    let totals = [];
+    res.forEach(item => {
+      cates.push(item.cate_name)
+      totals.push(item.total)
+    })
+    loadGraphy(cates, totals);
+  })
+</script>
 
 </html>

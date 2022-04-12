@@ -34,6 +34,7 @@
     let check = true;
     let ipt0 = $(input101[0]).val()
     let ipt1 = $(input101[1]).val()
+    const data = $("#loginForm").serialize()
 
     for (var i = 0; i < input101.length; i++) {
       if (validate(input101[i]) == false) {
@@ -46,13 +47,19 @@
     if (check) {
       if (!userReg.test(ipt0)) {
         layer.msg('用户名最少8位，开头必须是字母，只包含字母、数字和下划线。', { icon: 2 })
-        check = false
+        return false
       } else if (!passReg.test(ipt1) || !signReg.test(ipt1)) {
         layer.msg('密码最少8位，需包含".或*或@"。', { icon: 2 })
-        check = false
+        return false
+      } else {
+        $.post('/signin', data).then(res => {
+          const { err, msg } = res;
+          err == '20003' ? layer.msg(msg, { icon: 2 }) : location.href = '/'
+        })
+        return false;
       }
     }
-    return check;
+
   });
 
   var input102 = $('.wrap-input102 .input102');
@@ -136,7 +143,7 @@
             'password': ipt1
           },
           success: function (data) {
-            data.err == '20001' ? layer.msg(`${data.msg}`) : layer.msg(`${data.msg}`), $(txt2Ele).click()
+            data.err == '20001' ? layer.msg(`${data.msg}`, { icon: 2 }) : layer.msg(`${data.msg}`, { icon: 1 }), $(txt2Ele).click()
           }
         })
         return false;

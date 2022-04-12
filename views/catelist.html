@@ -76,16 +76,19 @@
           btn: ['确认提交', '取消'], btn1: async function (index, layero) {
             let cate_name = $("input[name=cate_name]").eq(0).val()
             let orderBy = $("input[name=orderBy]").eq(0).val()
-            let { err, msg } = await $.ajax({
-              type: 'post',
-              url: '/addCateData',
-              data: {
-                'cate_name': cate_name,
-                'orderBy': orderBy
-              }
-            })
-            err == '20003' ? layer.msg(msg, { icon: 2 }) : (layer.msg(msg, { icon: 1 }, layer.close(index), table.reload('cate')))
-
+            if (cate_name != '' && orderBy != '') {
+              let { err, msg } = await $.ajax({
+                type: 'post',
+                url: '/addCateData',
+                data: {
+                  'cate_name': cate_name,
+                  'orderBy': orderBy
+                }
+              })
+              err == '20003' ? layer.msg(msg, { icon: 2 }) : (layer.msg(msg, { icon: 1 }), layer.close(index), table.reload('cate'))
+            } else {
+              layer.msg('请输入值。', { icon: 2 })
+            }
           }, btn2: function (index, layero) {
             layer.close(index)
           }
