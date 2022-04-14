@@ -42,7 +42,7 @@ app.use(session({
 }))
 
 // 中间件，判断session阻止翻墙
-// app.use(checkSessAuth)
+app.use(checkSessAuth)
 
 // 执行路由模块
 app.use(router)

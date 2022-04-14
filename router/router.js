@@ -23,6 +23,7 @@ router.get('/login', indexController.login)
 router.get('/cate', cateController.index)
 router.get('/article', articleController.index)
 router.get('/setting', indexController.setting)
+router.get('/addArticle', articleController.addArticle)
 
 // 分类页数据
 router.get('/cateData', cateController.cateData)
@@ -30,6 +31,11 @@ router.post('/updCateData', cateController.updCateData)
 router.post('/addCateData', cateController.addCateData)
 router.get('/removeCateData', cateController.removeCateData)
 router.get('/cateCount', cateController.cateCount)
+
+// 文章列表数据
+router.get('/artData', articleController.artData)
+router.get('/delArtData', articleController.delArtData)
+router.post('/addArtData', upload.single('pic'), articleController.addArtData)
 
 // 系统设置数据
 router.get('/systemData', indexController.systemData)

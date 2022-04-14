@@ -64,6 +64,12 @@ cateController.removeCateData = async (req, res) => {
 cateController.cateCount = async (req, res) => {
   const sql = `SELECT count(t1.id) total,t2.cate_name FROM article t1 LEFT JOIN category t2 on t1.cate_id = t2.cate_id GROUP BY t1.cate_id`;
   let result = await query(sql)
+  result = result.map(item => {
+    if (!item.cate_name) {
+      item.cate_name = '未分类'
+    }
+    return item;
+  })
   res.json(result)
 }
 

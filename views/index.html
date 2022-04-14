@@ -22,15 +22,10 @@
         <div id="main" style="width: 600px;height:400px;"></div>
       </div>
     </div>
-
-    <div class="layui-footer">
-      <!-- 底部固定区域 -->
-      底部固定区域
-    </div>
   </div>
 
   <script src="/assets/js/System_style.js"></script>
-  <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+  <script src="https://cdn.bootcdn.net/ajax/libs/echarts/5.3.2/echarts.common.min.js"></script>
 </body>
 <script>
   function loadGraphy(cates, totals) {
@@ -53,8 +48,7 @@
         name: '篇数',
         data: totals,
         type: 'bar'
-      }
-      ]
+      }]
     };
 
     // 使用刚指定的配置项和数据显示图表。

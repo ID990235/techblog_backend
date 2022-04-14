@@ -42,8 +42,7 @@ UserController.upduserinfo = async (req, res) => {
   let { id } = req.session.userInfo
   let { username, intro, isPicReplace } = req.body
   // 获取旧图路径
-  let rows = await query(`select users.avatar from users where id = ${id}`)
-  let oldPic = rows[0].avatar;
+  let oldAvatar = req.session.userInfo.avatar;
 
   let pic = '';
   let sql = '';
@@ -72,13 +71,14 @@ UserController.upduserinfo = async (req, res) => {
   if (results.affectedRows > 0) {
     // 成功更新后且isPicReplace == 1 则删除原图路径
     if (isPicReplace == 1) {
-      const picPath = path.join(path.dirname(__dirname), oldPic);
+      const picPath = path.join(path.dirname(__dirname), oldAvatar);
       fs.unlink(picPath, () => { })
     }
     // 取出用户信息，再同步session和cookie中的用户信息
     const sql = `select * from users where id = ${id}`
     const result = await query(sql)
     // 将信息记录到session或cookie
+    req.session.userInfo = result[0];
     res.cookie('userinfo', JSON.stringify(result[0]), {
       expires: new Date(Date.now() + 40 * 3600000),
     })

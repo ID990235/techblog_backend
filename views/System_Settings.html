@@ -7,7 +7,6 @@
   <title>小明后台管理系统</title>
   <link rel="stylesheet" href="/assets/layui/css/layui.css">
 </head>
-
 <body>
   <div class="layui-layout layui-layout-admin">
 
@@ -30,18 +29,9 @@
               </button>
               <table class="layui-hide" id="settings" lay-filter="settings"></table>
             </div>
-            <div class="layui-tab-item">内容2</div>
-            <div class="layui-tab-item">内容3</div>
-            <div class="layui-tab-item">内容4</div>
-            <div class="layui-tab-item">内容5</div>
           </div>
         </div>
       </div>
-    </div>
-
-    <div class="layui-footer">
-      <!-- 底部固定区域 -->
-      底部固定区域
     </div>
   </div>
 
@@ -72,6 +62,7 @@
         layer.open({
           title: ['添加样式', 'font-size:20px'],
           area: ['450px', '250px'],
+          skin: 'layer_bg',
           content: `
                   <div class="layui-form-item">
                     <label class="layui-form-label">修改区域</label>
