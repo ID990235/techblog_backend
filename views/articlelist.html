@@ -5,6 +5,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <title>小明后台管理系统</title>
+  <link rel="stylesheet" href="/assets/css/lightbox.min.css">
   <link rel="stylesheet" href="/assets/layui/css/layui.css">
 </head>
 <style>
@@ -23,13 +24,25 @@
       <!-- 内容主体区域 -->
       <div style="padding: 15px;">
         <a class="layui-btn" href="/addArticle">添加</a>
+        <!-- 搜索区域start -->
+        <div class="search" style="display:flex;justify-content: end;">
+          <div class="layui-form-item">
+            <div class="layui-input-block">
+              <input type="text" id="keyword" autocomplete="off" placeholder="请输入标题" class="layui-input">
+            </div>
+          </div>
+          <button class="layui-btn layui-btn-warn" id="search">立即搜索</button>
+        </div>
+        <!-- 搜索区域end -->
         <table class="layui-hide" id="article" lay-filter="article"></table>
       </div>
     </div>
   </div>
 
   <script src="/assets/js/System_style.js"></script>
+  <script src="/assets/js/lightbox-plus-jquery.min.js"></script>
   <script type="text/html" id="barDemo">
+    <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
     <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
   </script>
 </body>
@@ -48,7 +61,7 @@
       content,
       type: 1,
       closeBtn: 2,
-      skin: 'layui-layer-rim', //加上边框
+      skin: 'layer_bg', //加上边框
       area: ['620px', '640px'], //宽高
 
     });
@@ -63,11 +76,12 @@
       defaultToolbar: ['filter', 'exports', 'print'],
       cols: [[
         { type: 'checkbox', fixed: 'left' }
-        , { field: 'id', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true }
+        , { field: 'id', title: 'ID', width: 80, fixed: 'left', unresize: true, sort: true, align: 'center' }
         , { field: 'title', title: '文章标题' }
         , {
           field: 'pic', title: '封面图', templet: ({ pic }) => {
-            return `<img src='${pic}' style="width:80px;"/>`
+            return `<a class="example-image-link" href="${pic}" data-lightbox="example-set" data-title="">
+              <img class="example-image" src="${pic}" alt=""/></a>`
           }
         }
         , {
@@ -76,8 +90,8 @@
             return `<a href="javascript:;" onclick='showContent(${mydata})'>内容预览</a>`
           }
         }
-        , { field: 'username', title: '发布者', sort: true }
-        , { field: 'statusText', title: '状态' }
+        , { field: 'username', title: '发布者', sort: true, align: 'center' }
+        , { field: 'statusText', title: '状态', align: 'center' }
         , { field: 'add_date', title: '添加时间' }
         , { field: 'cate_name', title: '所属分类', sort: true }
         , { field: 'right', title: '操作', toolbar: "#barDemo", align: 'center' }
@@ -91,14 +105,33 @@
     table.on('tool(article)', function (obj) {
       var { id, pic } = obj.data;
       if (obj.event === 'del') {
-        layer.confirm('是否确认删除？', async function (index) {
+        layer.confirm('是否确认删除？', { skin: 'layer_bg' }, async function (index) {
           obj.del();
           layer.close(index);
           let { err, msg } = await $.get(`/delArtData`, { id, pic })
           err == '20002' ? layer.msg(msg) : (layer.msg(msg), table.reload('cate'))
         });
+      } else if (obj.event === 'edit') {
+        location.href = '/edtiArticle?id=' + id
       }
     });
+
+    $("#search").click(function () {
+      let keyword = $("#keyword").val()
+      table.reload('article', {
+        where: { keyword }
+      })
+    })
+    $("#keyword").keyup(function (event) {
+      let keyword = $("#keyword").val()
+      event = event || window.event;
+      if (event.keyCode == 13) {
+        table.reload('article', {
+          where: { keyword }
+        })
+      }
+    })
+
   });
 </script>
 

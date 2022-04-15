@@ -24,6 +24,7 @@ router.get('/cate', cateController.index)
 router.get('/article', articleController.index)
 router.get('/setting', indexController.setting)
 router.get('/addArticle', articleController.addArticle)
+router.get('/edtiArticle', articleController.edtiArticle)
 
 // 分类页数据
 router.get('/cateData', cateController.cateData)
@@ -35,7 +36,9 @@ router.get('/cateCount', cateController.cateCount)
 // 文章列表数据
 router.get('/artData', articleController.artData)
 router.get('/delArtData', articleController.delArtData)
+router.get('/fetchOneArt', articleController.fetchOneArt)
 router.post('/addArtData', upload.single('pic'), articleController.addArtData)
+router.post('/updArtData', upload.single('pic'), articleController.updArtData)
 
 // 系统设置数据
 router.get('/systemData', indexController.systemData)
