@@ -12,6 +12,7 @@ app.use('/assets', express.static(__dirname + '/assets'))
 
 // 导入路由模块
 const router = require('./router/router.js')
+const apiRouter = require('./router/apiRouter.js')
 const checkSessAuth = require('./model/checkSessAuth.js')
 
 //配置模板的路径
@@ -40,6 +41,8 @@ app.use(session({
     maxAge: 60000 * 40, // 设置有效期为24分钟，说明：24分钟内，不访问就会过期，如果24分钟内访问了。则有效期重新初始化为24分钟。
   }
 }))
+
+app.use('/api', apiRouter)
 
 // 中间件，判断session阻止翻墙
 app.use(checkSessAuth)

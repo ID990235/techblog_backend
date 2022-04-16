@@ -2,7 +2,7 @@
 
 ### 技术栈
 
-es6、mysql、express、cookie&session、jwt、latui
+es6、mysql、express、cookie&session、latui、moment、nodejs、art-template
 
 ### github地址
 
