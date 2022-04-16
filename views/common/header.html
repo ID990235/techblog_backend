@@ -8,10 +8,18 @@
     background-color: #2ad479;
     border-color: #2ad479;
   }
+
+  .logo {
+    width: 30px;
+    height: 30px;
+    border-radius: 50px;
+  }
 </style>
 <div class="layui-header" id="headerColor">
-  <div class="layui-logo layui-hide-xs layui-bg-black" id="logoText">小明博客</div>
-
+  <div class="layui-logo layui-hide-xs layui-bg-black">
+    <img src="" alt="" id="logo" class="logo">
+    <span id="logoText">小明博客</span>
+  </div>
   <ul class="layui-nav layui-layout-right">
     <li class="layui-nav-item layui-hide layui-show-md-inline-block">
       <a href="javascript:;">
@@ -33,8 +41,10 @@
 
   let logoText = localStorage.getItem('logoText');
   $("#logoText").text(logoText);
-  let headerColor = localStorage.getItem('headerColor');
-  $("#headerColor").css({ backgroundColor: `${headerColor}` });
+  $("#logo").attr('alt', `${logoText}`);
+  $("#logo").attr('title', `${logoText}`);
+  let blogLogo = localStorage.getItem('blogLogo');
+  $("#logo").attr('src', `${blogLogo}`);
 
   let form = layui.form, layer = layui.layer
   // 上传图片显示

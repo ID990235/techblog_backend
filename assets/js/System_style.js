@@ -4,24 +4,21 @@
       , layer = layui.layer
       , util = layui.util
       , $ = layui.$;
-    const { data } = await $.get('/systemData')
+    let { data } = await $.get('/systemData')
     let logoText = ''
-    let headerColor = ''
-    let sideColor = ''
+    let blogLogo = ''
     for (let item of data) {
       if (item.name === 'logoText') {
         logoText = item.val;
-      } else if (item.name === 'headerColor') {
-        headerColor = item.val;
-      } else if (item.name === 'sideColor') {
-        sideColor = item.val ;
+      } else if (item.name === 'blogLogo') {
+        blogLogo = item.val;
       }
     }
     $("#logoText").text(logoText)
     // 存储到本地存储或cookie，供其他页面使用
     localStorage.setItem('logoText', logoText)
-    $("#headerColor").css({ backgroundColor: `${headerColor}` })
-    localStorage.setItem('headerColor', headerColor)
+    $("#logo").attr('src', `${blogLogo}`)
+    localStorage.setItem('blogLogo', blogLogo)
   });
 }
 )()

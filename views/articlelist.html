@@ -23,17 +23,19 @@
     <div class="layui-body">
       <!-- 内容主体区域 -->
       <div style="padding: 15px;">
-        <a class="layui-btn" href="/addArticle">添加</a>
-        <!-- 搜索区域start -->
-        <div class="search" style="display:flex;justify-content: end;">
-          <div class="layui-form-item">
-            <div class="layui-input-block">
-              <input type="text" id="keyword" autocomplete="off" placeholder="请输入标题" class="layui-input">
+        <div style="display: flex;justify-content: space-between;">
+          <a class="layui-btn" href="/addArticle">添加文章</a>
+          <!-- 搜索区域start -->
+          <div class="search" style="display:flex;justify-content: end;">
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <input type="text" id="keyword" autocomplete="off" placeholder="请输入标题" class="layui-input">
+              </div>
             </div>
+            <button class="layui-btn layui-btn-warn" id="search">立即搜索</button>
           </div>
-          <button class="layui-btn layui-btn-warn" id="search">立即搜索</button>
+          <!-- 搜索区域end -->
         </div>
-        <!-- 搜索区域end -->
         <table class="layui-hide" id="article" lay-filter="article"></table>
       </div>
     </div>

@@ -42,9 +42,7 @@ router.post('/updArtData', upload.single('pic'), articleController.updArtData)
 
 // 系统设置数据
 router.get('/systemData', indexController.systemData)
-router.post('/addsystemData', indexController.addsystemData)
-router.post('/updsystemData', indexController.updsystemData)
-router.get('/rmsystemData', indexController.rmsystemData)
+router.post('/updsystemData', upload.single('blogLogo'), indexController.updsystemData)
 
 // 处理用户登录
 router.post('/signin', userController.signin)
