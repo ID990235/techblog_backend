@@ -6,6 +6,8 @@ const artTemplate = require('art-template');
 const express_template = require('express-art-template');
 const PORT = 3200;
 
+require('dotenv').config()
+
 // 托管图片和当前所有文件
 app.use('/uploads', express.static(__dirname + '/uploads'))
 app.use('/assets', express.static(__dirname + '/assets'))

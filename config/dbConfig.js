@@ -1,7 +1,7 @@
 module.exports = {
   host: "localhost",
   port: 3306,
-  user: 'root',
-  password: "123456",
+  user: process.env.db_username,
+  password: process.env.db_password,
   database: 'cate_blog',
 }

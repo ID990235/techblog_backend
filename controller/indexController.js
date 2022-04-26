@@ -41,7 +41,7 @@ IndexController.systemData = async (req, res) => {
 // 系统设置：修改数据
 IndexController.updsystemData = async (req, res) => {
   let { logoText, oldPic } = req.body
-
+  let pic = ''
   if (req.file) {
     const sql1 = `update settings set val = '${logoText}' where Settings_id = 1`;
     const { affectedRows: af1 } = await query(sql1);
